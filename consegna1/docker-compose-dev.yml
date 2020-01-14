@@ -1,0 +1,51 @@
+version: '3'
+services:
+ database:
+  image: mysql:latest
+  environment:
+   MYSQL_ROOT_PASSWORD: DS2019!
+   MYSQL_HOST: database
+   MYSQL_DATABASE: videoserverdb
+   MYSQL_USER: springuser
+   MYSQL_PASSWORD: DS2019!
+#API--------------------------------------
+ apigateway:
+  image: api:v1
+  environment:
+   HOST_NAME_VMS: consegna1_videomanagementservice_1
+  links:
+     - videomanagementservice
+  ports:
+     - "8080:8080" 
+  volumes:
+   -  ./var:/api/var/
+#VMS--------------------------------------
+ videomanagementservice:
+  image: vms:v1
+  environment:
+   MYSQL_ROOT_PASSWORD: DS2019!
+   MYSQL_HOST: database
+   MYSQL_DATABASE: videoserverdb
+   MYSQL_USER: springuser
+   MYSQL_PASSWORD: DS2019!
+   HOST_NAME_VPS: consegna1_videoprocessingservice_1
+  links:
+     - database
+  volumes:
+   -  ./var:/vms/var/
+#VPS--------------------------------------
+ videoprocessingservice:
+  image: vps:v1
+  volumes:
+   - ./var:/vps/var/
+#PROMEHTEUS-------------------------------
+ prometheus:
+  image: prom/prometheus
+  links:
+  - apigateway
+  volumes:
+   - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  command:
+   - '--config.file=/etc/prometheus/prometheus.yml'
+  ports:
+   - "9090:9090"

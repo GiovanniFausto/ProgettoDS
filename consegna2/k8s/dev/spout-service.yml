@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spout-service
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: spout-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spout-service-external
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: spout-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spout-service
+spec:
+  selector:
+    matchLabels:
+      app: spout-service
+  template:
+    metadata:
+      labels:
+        app: spout-service
+    spec:
+      containers:
+      - name: spout-service
+        image: spout:v1
+        ports:
+        - containerPort: 8080
+        env:
+         - name: KAFKA_SPOUT_TOPIC
+           value: spout-topic
+         - name: KAFKA_ADDRESS
+           value: kafkaa:9092
+         - name: KAFKA_GROUP_ID
+           value: spout-service-group
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

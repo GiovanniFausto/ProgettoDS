@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vms-service-db
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: vms-service-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vms-service
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: vms-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vms-service-external
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: vms-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vms-service-db
+spec:
+  selector:
+    matchLabels:
+      app: vms-service-db
+  template:
+    metadata:
+      labels:
+        app: vms-service-db
+    spec:
+      containers:
+      - name: vms-service-db
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+         - name: MYSQL_ROOT_PASSWORD
+           value: DS2019!
+         - name: MYSQL_HOST
+           value: vms-service-db
+         - name: MYSQL_DATABASE
+           value: videoserverdb
+         - name: MYSQL_USER
+           value: springuser
+         - name: MYSQL_PASSWORD
+           value: DS2019!
+        volumeMounts:
+         - mountPath: /data/db
+           name: vms-service-db-volume
+      volumes:
+      - name: vms-service-db-volume
+        hostPath:
+            path: /vms-service-db-volume
+            type: DirectoryOrCreate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vms-service
+spec:
+  selector:
+    matchLabels:
+      app: vms-service
+  template:
+    metadata:
+      labels:
+        app: vms-service
+    spec:
+      containers:
+      - name: vms-service
+        image: vms:v1
+        volumeMounts:  
+        - mountPath: /vms/var
+          name: storage
+        ports:
+        - containerPort: 8080
+        env:
+         - name: MYSQL_HOST
+           value: vms-service-db
+         - name: HOST_NAME_API
+           value: api-service-external
+         - name: KAFKA_MAIN_TOPIC
+           value: main-topic
+         - name: KAFKA_ADDRESS
+           value: kafkaa:9092
+         - name: KAFKA_GROUP_ID
+           value: vms-service-group
+      volumes:
+       - name: storage
+         persistentVolumeClaim:
+           claimName: volmeperclaim
+

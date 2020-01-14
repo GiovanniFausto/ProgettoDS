@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sparkstream-service
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: sparkstream-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sparkstream-service-external
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: sparkstream-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sparkstream-service
+spec:
+  selector:
+    matchLabels:
+      app: sparkstream-service
+  template:
+    metadata:
+      labels:
+        app: sparkstream-service
+    spec:
+      containers:
+      - name: sparkstream-service
+        image: sparkstream:v1
+        ports:
+        - containerPort: 8080

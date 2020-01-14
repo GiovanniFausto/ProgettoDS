@@ -1,0 +1,9 @@
+FROM maven:3-jdk-8 as builder
+WORKDIR /sparkstream
+COPY . .
+RUN mvn package -P production -Dmaven.test.skip=true
+
+FROM java:8
+WORKDIR /sparkstream
+COPY --from=builder  /sparkstream/target/sparkreaderkafka-0.0.1-SNAPSHOT.jar ./sparkstream.jar
+CMD java -jar sparkstream.jar

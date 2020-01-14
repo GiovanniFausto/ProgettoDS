@@ -1,0 +1,4 @@
+FROM java:8
+WORKDIR /api
+ADD ./target/apigateway-0.0.1-SNAPSHOT.jar ./api.jar
+CMD java -jar api.jar

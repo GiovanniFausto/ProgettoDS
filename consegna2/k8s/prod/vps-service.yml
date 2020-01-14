@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vps-service
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: vps-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vps-service
+spec:
+  selector:
+    matchLabels:
+      app: vps-service
+  template:
+    metadata:
+      labels:
+        app: vps-service
+    spec:
+      containers:
+      - name: vps-service
+        image: vps-prod:v1
+        volumeMounts:  
+        - mountPath: /vps/var
+          name: storage
+        ports:
+        - containerPort: 8080
+        env:
+         - name: KAFKA_MAIN_TOPIC
+           value: main-topic
+         - name: KAFKA_ADDRESS
+           value: kafkaa:9092
+         - name: KAFKA_GROUP_ID
+           value: vps-service-group
+      volumes:
+       - name: storage
+         persistentVolumeClaim:
+           claimName: volmeperclaim
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

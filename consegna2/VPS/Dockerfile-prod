@@ -1,0 +1,10 @@
+FROM maven:3-jdk-8 as builder
+WORKDIR /vps
+COPY . .
+RUN mvn package -P production -Dmaven.test.skip=true
+
+FROM wanggaopeng/ffmpeg-java:v1
+WORKDIR /vps
+COPY --from=builder  /vps/target/videoprocessingservice-0.0.1-SNAPSHOT.jar ./vps.jar
+ADD script.sh ./script.sh
+CMD java -jar vps.jar
