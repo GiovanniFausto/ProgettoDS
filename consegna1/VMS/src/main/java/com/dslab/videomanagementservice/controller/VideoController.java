@@ -74,7 +74,7 @@ public class VideoController {
             Video video = videoManagementService.getVideo(id).get();
             if(video.getStato()!=null) {//controllo se ho fatto upload del video
                 return  ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY) //ritorna 301 e l'url di dove è il file
-                       .header(HttpHeaders.LOCATION,"http://consegna1_apigateway_1:8080/videofiles/"+id+"/video.mpd")// è l'url per l'api
+                       .header(HttpHeaders.LOCATION,"http://localhost:8080/videofiles/"+id+"/video.mpd")// è l'url per l'api
                        .build();
             }
             else {
