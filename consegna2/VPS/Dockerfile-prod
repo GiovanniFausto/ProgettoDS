@@ -7,4 +7,5 @@ FROM wanggaopeng/ffmpeg-java:v1
 WORKDIR /vps
 COPY --from=builder  /vps/target/videoprocessingservice-0.0.1-SNAPSHOT.jar ./vps.jar
 ADD script.sh ./script.sh
+RUN chmod 777 ./script.sh
 CMD java -jar vps.jar
