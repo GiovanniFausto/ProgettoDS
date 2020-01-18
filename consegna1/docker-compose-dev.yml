@@ -12,7 +12,7 @@ services:
  apigateway:
   image: api:v1
   environment:
-   HOST_NAME_VMS: consegna1_videomanagementservice_1
+   HOST_NAME_VMS: videomanagementservice
   links:
      - videomanagementservice
   ports:
@@ -28,7 +28,7 @@ services:
    MYSQL_DATABASE: videoserverdb
    MYSQL_USER: springuser
    MYSQL_PASSWORD: DS2019!
-   HOST_NAME_VPS: consegna1_videoprocessingservice_1
+   HOST_NAME_VPS: videoprocessingservice
   links:
      - database
   volumes:
