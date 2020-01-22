@@ -1,0 +1,5 @@
+FROM java:8
+WORKDIR /spout
+ADD ./target/spout-0.0.1-SNAPSHOT.jar ./spout.jar
+CMD java -jar spout.jar
+
